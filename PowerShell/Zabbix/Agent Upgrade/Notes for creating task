@@ -1,0 +1,31 @@
+##Script Resources:
+## All files are stored in \\ycsd.york.va.us\shares\apps\zabbix\
+
+##Create Action to run script from network location
+$action = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-executionpolicy bypass -NoProfile -WindowStyle Hidden -command "& \\ycsd.york.va.us\shares\apps\zabbix\update-zabbix.ps1"'
+
+##Create Trigger (when should task run - might want to switch to manual)
+$trigger = New-ScheduledTaskTrigger -once -at 9am
+
+## who should script run as
+$UserName = "chafner@ycsd.york.va.us"
+
+##Bring in password for runas user
+$SecurePassword = $password = Read-Host -AsSecureString
+
+## convert password
+$cred = New-Object System.Management.Automation.PSCredential -ArgumentList $UserName, $SecurePassword
+
+##Use password
+$Password = $Cred.GetNetworkCredential().Password 
+
+##Servers to create task on (enter full path)
+$servers = get-content "\\ycsd.york.va.us\shares\apps\zabbix\servers.txt"
+
+## Task Name
+$Task = "Upgrade Zabbix"
+
+## Run task at highest level. Overide UAC
+$level = "Highest"
+
+##test edit

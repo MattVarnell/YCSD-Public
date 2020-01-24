@@ -1,0 +1,32 @@
+
+$source = "\\ycsd.york.va.us\shares\apps\zabbix"
+$Destination = "c:\zabbix"
+$OSARCH = gwmi win32_operatingsystem | select osarchitecture
+$zbxservice = get-service *zabb* -ErrorAction SilentlyContinue
+$Site = $ENV:COMPUTERNAME.Substring(0,3)
+#Enter-pssession <server name>
+if ($zbxservice.length -gt 0)
+ {
+     get-service *zabb* | stop-service
+     Get-ChildItem -Path $Destination -Recurse | Remove-Item -force -recurse
+     Remove-Item $Destination -Force -Recurse
+ }
+ else
+ {
+     #continue
+ }
+
+
+ 
+if (!(Test-Path $Destination))
+{
+    Copy-Item $source\x64\zabbix -Destination $Destination -Recurse
+}
+else
+{
+    
+   Remove-Item $Destination -Force -Recurse
+   Copy-Item $source\x64\zabbix -Destination $Destination -Recurse
+}
+Copy-Item $source\$site\zabbix.conf -Destination $Destination -Recurse
+Get-Service $zbxservice | Start-Service

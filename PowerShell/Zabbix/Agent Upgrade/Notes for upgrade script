@@ -1,0 +1,50 @@
+## All files are stored in \\ycsd.york.va.us\shares\apps\zabbix\
+
+
+## Source of zabbix binaries
+$source = "\\ycsd.york.va.us\shares\apps\zabbix"
+
+## Location to copy to on local server
+$Destination = "c:\zabbix"
+
+## Get OS Architecture (not used at the moment, but some files might be in x86)
+$OSARCH = gwmi win32_operatingsystem | select osarchitecture
+
+## Need to stop the zabbix service to remove old agent
+$zbxservice = get-service *zabb* -ErrorAction SilentlyContinue
+
+## Get first three characters of the computer name to use in zabbix.conf
+$Site = $ENV:COMPUTERNAME.Substring(0,3)
+
+
+## Check for zabbix service and stop service if it exists
+if ($zbxservice.length -gt 0)
+ {
+     get-service *zabb* | stop-service
+     Get-ChildItem -Path $Destination -Recurse | Remove-Item -force -recurse
+     Remove-Item $Destination -Force -Recurse
+ }
+ else
+ {
+     #continue
+ }
+
+## Check if c:\zabbix does not exist, if not copy the zabbix folder from $Source
+ 
+if (!(Test-Path $Destination))
+{
+    Copy-Item $source\x64\zabbix -Destination $Destination -Recurse
+}
+else
+{
+    
+## If zabbix folder exists, delete it and then copy folder from source    
+   Remove-Item $Destination -Force -Recurse
+   Copy-Item $source\x64\zabbix -Destination $Destination -Recurse
+}
+
+## copy zabbix.conf from site folder using $site
+Copy-Item $source\$site\zabbix.conf -Destination $Destination -Recurse
+
+## start the zabbix service again
+Get-Service $zbxservice | Start-Service

@@ -1,0 +1,7 @@
+$servers = get-content "\\ycsd.york.va.us\shares\apps\zabbix\servers.txt"
+$Task = "Upgrade Zabbix"
+
+foreach ($server in $servers)
+{invoke-command -computer $server -ScriptBlock {Unregister-ScheduledTask -TaskName $using:Task -Confirm }
+    
+}

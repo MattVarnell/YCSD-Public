@@ -1,0 +1,35 @@
+currently the script folder is at \\ycsd.york.va.us\shares\apps\zabbix
+
+The script expects the structure to be:
+
+zabbix
+-x86
+--zabbix
+--zabbix\zabbix_agentd.exe
+--zabbix\zabbix_get.exe
+--zabbix\zabbix_sender.exe
+---dev
+---dev\zabbix_sender.dll
+---dev\zabbix_sender.lib
+---scripts
+---scripts\sigcheck64.exe
+
+-x64
+--zabbix
+--zabbix\zabbix_agentd.exe
+--zabbix\zabbix_get.exe
+--zabbix\zabbix_sender.exe
+---dev
+---dev\zabbix_sender.dll
+---dev\zabbix_sender.lib
+---scripts
+---scripts\sigcheck64.exe
+-bhs
+-bme
+-ces
+-cmp
+-des
+-exc (this is for the exchange and evault servers that don't match naming standard
+-gbe
+-gsc
+-ycs (this is for legacy servers that use the ycsd-* naming standard
